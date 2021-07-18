@@ -114,13 +114,24 @@ class WebDriverProxy:
             WebDriverWait(driver, self._screenshot_load_wait).until_not(
                 EC.presence_of_all_elements_located((By.CLASS_NAME, "loading"))
             )
+            logger.debug("Wait for chart to have content")
+            WebDriverWait(driver, self._screenshot_locate_wait).until(
+                EC.visibility_of_all_elements_located(
+                    (By.CLASS_NAME, "slice_container")
+                )
+            )
+            selenium_animation_wait = current_app.config[
+                "SCREENSHOT_SELENIUM_ANIMATION_WAIT"
+            ]
+            logger.debug("Wait %i seconds for chart animation", selenium_animation_wait)
+            sleep(selenium_animation_wait)
             logger.info("Taking a PNG screenshot or url %s", url)
             img = element.screenshot_as_png
         except TimeoutException:
-            logger.error("Selenium timed out requesting url %s", url, exc_info=True)
+            logger.warning("Selenium timed out requesting url %s", url, exc_info=True)
         except StaleElementReferenceException:
             logger.error(
-                "Selenium timed out while waiting for chart(s) to load %s",
+                "Selenium got a stale element while requesting url %s",
                 url,
                 exc_info=True,
             )

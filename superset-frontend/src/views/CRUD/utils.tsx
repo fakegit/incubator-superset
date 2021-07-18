@@ -23,13 +23,15 @@ import {
   SupersetClientResponse,
   logging,
   styled,
+  SupersetTheme,
+  css,
 } from '@superset-ui/core';
 import Chart from 'src/types/Chart';
 import rison from 'rison';
 import { getClientErrorObject } from 'src/utils/getClientErrorObject';
 import { FetchDataConfig } from 'src/components/ListView';
 import SupersetText from 'src/utils/textUtils';
-import { Dashboard, Filters, SavedQueryObject } from './types';
+import { Dashboard, Filters } from './types';
 
 const createFetchResourceMethod = (method: string) => (
   resource: string,
@@ -219,32 +221,6 @@ export function handleChartDelete(
   );
 }
 
-export function handleBulkChartExport(chartsToExport: Chart[]) {
-  return window.location.assign(
-    `/api/v1/chart/export/?q=${rison.encode(
-      chartsToExport.map(({ id }) => id),
-    )}`,
-  );
-}
-
-export function handleBulkDashboardExport(dashboardsToExport: Dashboard[]) {
-  return window.location.assign(
-    `/api/v1/dashboard/export/?q=${rison.encode(
-      dashboardsToExport.map(({ id }) => id),
-    )}`,
-  );
-}
-
-export function handleBulkSavedQueryExport(
-  savedQueriesToExport: SavedQueryObject[],
-) {
-  return window.location.assign(
-    `/api/v1/saved_query/export/?q=${rison.encode(
-      savedQueriesToExport.map(({ id }) => id),
-    )}`,
-  );
-}
-
 export function handleDashboardDelete(
   { id, dashboard_title: dashboardTitle }: Dashboard,
   refreshData: (config?: FetchDataConfig | null) => void,
@@ -321,6 +297,11 @@ export const CardStyles = styled.div`
   a {
     text-decoration: none;
   }
+`;
+
+export const StyledIcon = (theme: SupersetTheme) => css`
+  margin: auto ${theme.gridUnit * 2}px auto 0;
+  color: ${theme.colors.grayscale.base};
 `;
 
 export /* eslint-disable no-underscore-dangle */
